@@ -5,18 +5,19 @@ import java.io.PrintStream;
 import aima.core.agent.Action;
 import aima.core.agent.Agent;
 import aima.core.agent.Percept;
-import squatter.core.Move;
-import squatter.core.Player;
-import squatter.core.Piece;
+import squatter.player.Helper;
 
 public class SquatterAgent implements Agent, SquatterPiece {
 
 	private int color;
 	private SquatterBoard board;
+	private boolean isAlive;
 	
 	/** Creates new empty squatter agent
 	 */
-	public SquatterAgent(){}
+	public SquatterAgent(){
+		isAlive = true;
+	}
 	
 	/** Initializes new squatter agent,
 	 * @param n Color of the agent.
@@ -36,30 +37,35 @@ public class SquatterAgent implements Agent, SquatterPiece {
 	public SquatterMove execute(Percept b) {
 		if(!(b instanceof SquatterBoard))
 			throw new IllegalArgumentException("Percept must be of subclass board");
+		
+		
 		// TODO	
 		return null;
 	}
 
 	@Override
 	public boolean isAlive() {
-		// TODO Auto-generated method stub
-		return false;
+		return isAlive;
 	}
 
 	@Override
 	public void setAlive(boolean arg0) {
-		// TODO Auto-generated method stub
+		this.isAlive = arg0;
 	}
 
-	public void changeBoard(SquatterMove move){
-		// TODO
+	public int changeBoard(SquatterMove move){
+		int position = board.b[move.Row][move.Col];
+		if(position != EMPTY) return -1;
+		else{
+			board.makeMove(move.Row, move.Col, move.P);
+			return 0;
+		}
 	}
 	
 	public int getWinner(){
-		// TODO
-		return 0;
+		return Helper.GetWinner(this.board);
 	}
-
+	
 	public void printBoard(PrintStream output) {
 		this.board.printBoard(output);
 	}

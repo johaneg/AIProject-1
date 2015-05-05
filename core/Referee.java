@@ -2,7 +2,7 @@ package squatter.core;
 
 /*   
  *   Referee:
- *      A mediator between two players. It is responsible to initialize 
+ *      A mediator between two players. It is responsible mto initialize 
  *      the players and pass the plays between them and terminates the game. 
  *      It is the responsibility of the players to check whether they have won and
  *      maintain the board state.

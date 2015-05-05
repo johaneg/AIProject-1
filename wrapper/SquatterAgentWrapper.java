@@ -44,17 +44,28 @@ public class SquatterAgentWrapper extends SquatterAgent implements Player {
 		super.printBoard(output);
 	}
 	
+	/** Generates a move equivalent to the squatter move
+	 * @param a
+	 * @return
+	 */
 	private Move moveFromSquatterMove(SquatterMove a){
-		Move m = new Move();
-		m.Col = a.Col;
-		m.P = a.P;
-		m.Row = a.Row;
-		return m;
+		Move b = new Move();
+		b.Col = a.Col;
+		b.P = a.P;
+		b.Row = a.Row;
+		return b;
 	}
 	
+	/** Generates a squatter move equivalent to the move
+	 * @param a
+	 * @return
+	 */
 	private SquatterMove squatterMoveFromMove (Move a){
-		// TODO
-		return null;
+		SquatterMove b = new SquatterMove();
+		b.Col = a.Col;
+		b.P = a.P;
+		b.Row = a.Row;
+		return b;
 	}
 
 }
