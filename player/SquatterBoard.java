@@ -11,8 +11,8 @@ public class SquatterBoard implements Percept, SquatterPiece {
 	public int [][] b;
 	public int size;
 	public int emptycells;
-	public int whitepoints;
-	public int blackpoints;
+	public int whitepoints, blackpoints;
+
 	/** Initialize an empty board of size n
 	 * @param n This creates a n x n board
 	 */
@@ -36,35 +36,45 @@ public class SquatterBoard implements Percept, SquatterPiece {
 	
 	public void makeMove (int row, int col, int p){
 		this.b[row][col] = p;
+		emptycells--;
 		updateBoard(row,col,p);
 	}
 	
 	private void updateBoard(int row, int col, int p){
-
 		boolean[] conditions = neighboorhoodCheck(row,col,p);
-		if (conditions[0]){
-			emptycells--;
+		if (!conditions[0]){
 			return;
 		}
 		else {
+
 			// declare check matrix
 			boolean[][][] check = new boolean[4][size][size];
 			
-			if(conditions[1])
-				if(Helper.isRegionConquered(b, check[0], size, row + 1, col, p) == 1)
-					updateConquered(check[0],p);
 			
-			if(conditions[2])
-				if(Helper.isRegionConquered(b, check[1], size, row, col + 1, p) == 1)
-					updateConquered(check[1],p);
-
-			if(conditions[3])
-				if(Helper.isRegionConquered(b, check[2], size, row - 1, col, p) == 1)
-					updateConquered(check[2],p);
+			if(conditions[1])//fr
+			{
+				if(this.isRegionConquered(b, check[0], size, row, col + 1, p) == 1)
+					{ updateConquered(check[0],p); }
+			}
 			
-			if(conditions[4])
-				if(Helper.isRegionConquered(b, check[3], size, row, col - 1, p) == 1);
-					updateConquered(check[3],p);
+			if(conditions[2])//ft
+			{
+				if(this.isRegionConquered(b, check[1], size, row - 1, col, p) == 1)
+					{ updateConquered(check[1],p); }
+			}
+			
+			if(conditions[3])//fl
+			{
+				if(this.isRegionConquered(b, check[2], size, row, col - 1, p) == 1)
+					{ updateConquered(check[2],p); } 
+			}
+			
+			if(conditions[4])//fb
+			{
+				if(this.isRegionConquered(b, check[3], size, row + 1, col, p) == 1)
+					{ updateConquered(check[3],p); }
+			}
+			
 
 		}
 	}
@@ -94,15 +104,19 @@ public class SquatterBoard implements Percept, SquatterPiece {
 	public void updateConquered(boolean [][] c, int p){
 			
 		if(p == WHITE){
+
 			for (int x = 0; x < size; x++){
 				for (int y = 0; y < size; y++){
 					if (c[x][y] == true){
 						if(b[x][y] == EMPTY){
 							b[x][y] = ECAPbyW;
 							emptycells--;
+							whitepoints++;
 						}
-						if(b[x][y] == BLACK) b[x][y] = BCAPbyW;
-						if(b[x][y] == WCAPbyB) b[x][y] = WHITE;
+						if(b[x][y] == BLACK){ b[x][y] = BCAPbyW; whitepoints++;}
+						if(b[x][y] == WCAPbyB){ b[x][y] = WHITE; blackpoints--;}
+						if(b[x][y] == ECAPbyB) {b[x][y] = ECAPbyW; whitepoints++; blackpoints--;}
+
 					}
 				}
 			}
@@ -114,13 +128,53 @@ public class SquatterBoard implements Percept, SquatterPiece {
 						if(b[x][y] == EMPTY){
 							b[x][y] = ECAPbyB;
 							emptycells--;
+							blackpoints++;
 						}
-						if(b[x][y] == WHITE) b[x][y] = WCAPbyB;
-						if(b[x][y] == BCAPbyW) b[x][y] = BLACK;
+						if(b[x][y] == WHITE){ b[x][y] = WCAPbyB; blackpoints++;}
+						if(b[x][y] == BCAPbyW){ b[x][y] = BLACK; whitepoints--;}
+						if(b[x][y] == ECAPbyW){ b[x][y] = ECAPbyB; blackpoints++; whitepoints--;}
+
 					}		
 				}
 			}
 		}
+	}
+
+	public int isRegionConquered(int[][] b, boolean [][] n, int size, int x, int y, int surroundedby){
+		
+		//checks for corner hit
+		if((x>=size)||(x<0)||(y>=size)||(y<0))
+			return 0;
+		
+		// checks for other color hit
+		if(b[x][y] == surroundedby)
+			return 1;
+		
+		//visits the place
+		n[x][y] = true;
+		
+		//recursively checks every other adjacent place
+		int output = 1;
+		
+		if(x+1>=size) output = 0;
+		else if(n[x+1][y] == false)
+			output *= isRegionConquered(b,n,size,x+1,y,surroundedby);
+		
+		if(y+1>=size) output = 0;
+		else if (n[x][y+1] == false)
+			output *= isRegionConquered(b,n,size,x,y+1,surroundedby);
+		
+		if(x-1<0) output = 0;
+		else if (n[x-1][y]  == false)
+			output *= isRegionConquered(b,n,size,x-1,y,surroundedby);
+		
+		if(y-1<0) return 0;
+		else if(n[x][y-1]  == false)
+			output *= isRegionConquered(b,n,size,x,y-1,surroundedby);
+		
+		// returns 1 if place is surrounded by 
+		// surroundeby and 0 otherwise
+		return output;	
 	}
 	
 	

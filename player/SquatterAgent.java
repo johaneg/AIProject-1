@@ -12,7 +12,6 @@ public class SquatterAgent implements Agent, SquatterPiece {
 	private int color;
 	private SquatterBoard board;
 	private boolean isAlive;
-	
 	/** Creates new empty squatter agent
 	 */
 	public SquatterAgent(){
@@ -54,12 +53,16 @@ public class SquatterAgent implements Agent, SquatterPiece {
 	}
 
 	public int changeBoard(SquatterMove move){
-		int position = board.b[move.Row][move.Col];
-		if(position != EMPTY) return -1;
+		
+		if(isPosValid(move.Row, move.Col)) return -1;
 		else{
 			board.makeMove(move.Row, move.Col, move.P);
 			return 0;
 		}
+	}
+	
+	private boolean isPosValid (int x, int y){
+		return (this.board.b[x][y] != EMPTY);
 	}
 	
 	public int getWinner(){
