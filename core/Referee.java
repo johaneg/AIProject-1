@@ -30,14 +30,17 @@ public class Referee implements Piece{
 			P1 = (Player)(Class.forName(args[1]).newInstance());
 			P2 = (Player)(Class.forName(args[2]).newInstance());
 		}
+		
 		catch(Exception e){
 			System.out.println("Error "+ e.getMessage());
 			System.exit(1);
 		}
+
 		
 		P1.init(Integer.valueOf(args[0]), WHITE);
 		P2.init(Integer.valueOf(args[0]), BLACK);
-		
+		System.out.println("dsasda");
+
 		
 		while(boardEmptyPieces > 0 && P1.getWinner() == 0 && P2.getWinner() ==0)
 		{

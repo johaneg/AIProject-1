@@ -12,5 +12,11 @@ public class SquatterMove implements Action, SquatterPiece {
 	public boolean isNoOp() {
 		return false;
 	}
+	
+	public SquatterMove (int r, int c, int p){
+		this.P = p;
+		this.Row = r;
+		this.Col = c;
+	}
 
 }

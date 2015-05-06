@@ -61,10 +61,8 @@ public class SquatterAgentWrapper extends SquatterAgent implements Player {
 	 * @return
 	 */
 	private SquatterMove squatterMoveFromMove (Move a){
-		SquatterMove b = new SquatterMove();
-		b.Col = a.Col;
-		b.P = a.P;
-		b.Row = a.Row;
+		SquatterMove b = new SquatterMove(a.Row, a.Col, a.P);
+
 		return b;
 	}
 

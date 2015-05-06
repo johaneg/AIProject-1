@@ -1,6 +1,7 @@
 package squatter.player;
 
 import java.io.PrintStream;
+import java.util.Random;
 
 import aima.core.agent.Action;
 import aima.core.agent.Agent;
@@ -12,6 +13,8 @@ public class SquatterAgent implements Agent, SquatterPiece {
 	private int color;
 	private SquatterBoard board;
 	private boolean isAlive;
+	private Random rand;
+	
 	/** Creates new empty squatter agent
 	 */
 	public SquatterAgent(){
@@ -23,9 +26,11 @@ public class SquatterAgent implements Agent, SquatterPiece {
 	 * @param p Board size.
 	 */
 	public int init (int n, int p){
-		this.color = n;
-		this.board = new SquatterBoard(p);
+		this.color = p;
+		this.board = new SquatterBoard(n);
+		rand = new Random();
 		return 1;
+
 	}
 	
 	public SquatterMove execute(){
@@ -38,8 +43,15 @@ public class SquatterAgent implements Agent, SquatterPiece {
 			throw new IllegalArgumentException("Percept must be of subclass board");
 		
 		
-		// TODO	
-		return null;
+		int [][] positions = Helper.GetPositions(board);
+		System.out.println(board.emptycells + " "+ positions.length);
+		int play = rand.nextInt(board.emptycells);
+		
+		SquatterMove next = new SquatterMove(positions[play][0],positions[play][1],this.color);
+		
+		changeBoard(next);
+		
+		return next;
 	}
 
 	@Override
