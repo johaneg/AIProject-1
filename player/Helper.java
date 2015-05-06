@@ -23,7 +23,7 @@ public class Helper implements Piece {
 	public static int isRegionConquered(int[][] b, boolean [][] n, int size, int x, int y, int surroundedby){
 		
 		//checks for corner hit
-		if(cornerHit(size,x,y))
+		if((x>=size)||(x<0)||(y>=size)||(y<0))
 			return 0;
 		
 		// checks for other color hit
@@ -33,29 +33,32 @@ public class Helper implements Piece {
 		//visits the place
 		n[x][y] = true;
 		
+
+		//recursively checks every other adjacent place
 		int output = 1;
+
 		
-		if(x+1>=size) return 0;
+		if(x+1>=size) output = 0;
 		else if(n[x+1][y] == false)
 			output *= isRegionConquered(b,n,size,x+1,y,surroundedby);
 		
-		if(y+1>=size) return 0;
-		if (n[x][y+1] == false)
+		if(y+1>=size) output = 0;
+		else if (n[x][y+1] == false)
 			output *= isRegionConquered(b,n,size,x,y+1,surroundedby);
 		
-		if(x-1<0) return 0;
-		if (n[x-1][y]  == false)
+		if(x-1<0) output = 0;
+		else if (n[x-1][y]  == false)
 			output *= isRegionConquered(b,n,size,x-1,y,surroundedby);
 		
 		if(y-1<0) return 0;
-		if(n[x][y-1]  == false)
+		else if(n[x][y-1]  == false)
 			output *= isRegionConquered(b,n,size,x,y-1,surroundedby);
 		
+		// returns 1 if place is surrounded by 
+		// surroundeby and 0 otherwise
 		return output;	
 	}
 	
-	public static boolean cornerHit(int s, int x, int y){
-		return ((x>=s)||(x<0)||(y>=s)||(y<0));
-	}
+
 	
 }
