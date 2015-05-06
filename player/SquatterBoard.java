@@ -34,58 +34,64 @@ public class SquatterBoard implements Percept, SquatterPiece {
 		}
 	}
 	
-	public void makeMove (int x, int y, int p){
-		this.b[x][y] = p;
-		updateBoard(x,y,p);
+	public void makeMove (int row, int col, int p){
+		this.b[row][col] = p;
+		updateBoard(row,col,p);
 	}
 	
-	private void updateBoard(int x, int y, int p){
-		//degrees of freedom, where is NOT filled by same piece
-		// Right, Top, Left and Bottom respectively
-		Boolean fR = true, fT = true, fL = true, fB = true;
-		
-		if (neighboorhoodCheck(x,y,p, fR, fT, fL, fB)){
+	private void updateBoard(int row, int col, int p){
+
+		boolean[] conditions = neighboorhoodCheck(row,col,p);
+		if (conditions[0]){
 			emptycells--;
 			return;
 		}
 		else {
 			// declare check matrix
-			Boolean[][][] check = new Boolean[4][size][size];
+			boolean[][][] check = new boolean[4][size][size];
 			
-			if(fR)
-				if(Helper.isRegionConquered(b, check[0], size, x + 1, y, p) == 1)
+			if(conditions[1])
+				if(Helper.isRegionConquered(b, check[0], size, row + 1, col, p) == 1)
 					updateConquered(check[0],p);
 			
-			if(fT)
-				if(Helper.isRegionConquered(b, check[1], size, x, y + 1, p) == 1)
+			if(conditions[2])
+				if(Helper.isRegionConquered(b, check[1], size, row, col + 1, p) == 1)
 					updateConquered(check[1],p);
 
-			if(fL)
-				if(Helper.isRegionConquered(b, check[2], size, x - 1, y, p) == 1)
+			if(conditions[3])
+				if(Helper.isRegionConquered(b, check[2], size, row - 1, col, p) == 1)
 					updateConquered(check[2],p);
 			
-			if(fB)
-				if(Helper.isRegionConquered(b, check[3], size, x, y - 1, p) == 1);
+			if(conditions[4])
+				if(Helper.isRegionConquered(b, check[3], size, row, col - 1, p) == 1);
 					updateConquered(check[3],p);
 
 		}
-		
 	}
 	
-	public boolean neighboorhoodCheck (int x, int y, int p, Boolean fR, Boolean fT, Boolean fL, Boolean fB){
+	public boolean[] neighboorhoodCheck (int row, int col, int p){
 		int adj = 0;
-		if ((x+1 < size)||(y < size)||(this.b[x+1][y] == p))
-			{ adj++;  fR = false; }
-		if ((x < size)||(y+1 < size)||(this.b[x][y+1] == p))
-			{ adj++; fT = false; }
-		if ((x-1 < size)||(y < size)||(this.b[x-1][y] == p))
-			{ adj++; fL = false; }
-		if ((x < size)||(y-1 < size)||(this.b[x-1][y] == p))
-			{ adj++; fB = false; }
-		return ((adj == 2)||(adj == 3));		
+		
+		boolean fR = true, fT = true, fL = true, fB = true;
+		
+		if (row+1 >= size) fR = false;
+		else if(this.b[row+1][col] == p){adj++; fB = false; }
+		
+		if (col-1 < 0) fT = false;
+		else if(this.b[row][col-1] == p){adj++; fL = false;}
+		
+		if (row-1 < 0) fL = false;
+		else if(this.b[row-1][col] == p){adj++; fT = false;}
+
+		if (col+1 >= size) fB = false;
+		else if(this.b[row][col+1] == p){adj++; fR = false;}
+
+		boolean worthInspecting = ((adj == 2)||(adj == 3));	
+		
+		return new boolean[]{worthInspecting,fR, fT, fL, fB};
 	}
 	
-	public void updateConquered(Boolean [][] c, int p){
+	public void updateConquered(boolean [][] c, int p){
 			
 		if(p == WHITE){
 			for (int x = 0; x < size; x++){
@@ -116,9 +122,6 @@ public class SquatterBoard implements Percept, SquatterPiece {
 			}
 		}
 	}
-	
-
-
 	
 	
 }

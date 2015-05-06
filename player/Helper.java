@@ -18,20 +18,9 @@ public class Helper implements Piece {
 		else return 0;
 	}
 	
-	public static void modifiedFloodFill(int[][] b, int size, int x, int y, int color){
 
-		//if twoAdjacentSameColor() == false return
-		int piece = b[x][y];
-		boolean[][] isNew = new boolean[x][y];
-		
-		//ArrayList<Tuple<int,int>> a = new Array();
-		//if x+i,y+j outside of board return
-		//if x+i,y+j same color as b[x][y] return
-		
-
-	}
 	
-	public static int isRegionConquered(int[][] b, Boolean [][] n, int size, int x, int y, int surroundedby){
+	public static int isRegionConquered(int[][] b, boolean [][] n, int size, int x, int y, int surroundedby){
 		
 		//checks for corner hit
 		if(cornerHit(size,x,y))
@@ -46,22 +35,27 @@ public class Helper implements Piece {
 		
 		int output = 1;
 		
-		if(n[x+1][y] == true)
+		if(x+1>=size) return 0;
+		else if(n[x+1][y] == false)
 			output *= isRegionConquered(b,n,size,x+1,y,surroundedby);
-		if(n[x][y+1] == true)
+		
+		if(y+1>=size) return 0;
+		if (n[x][y+1] == false)
 			output *= isRegionConquered(b,n,size,x,y+1,surroundedby);
-		if(n[x-1][y] == true)
+		
+		if(x-1<0) return 0;
+		if (n[x-1][y]  == false)
 			output *= isRegionConquered(b,n,size,x-1,y,surroundedby);
-		if(n[x][y-1] == true)
+		
+		if(y-1<0) return 0;
+		if(n[x][y-1]  == false)
 			output *= isRegionConquered(b,n,size,x,y-1,surroundedby);
 		
-		return output;
-		
-		
+		return output;	
 	}
 	
 	public static boolean cornerHit(int s, int x, int y){
-		return ((x>=s)||(x<0)||(x>=y)||(x<0));
+		return ((x>=s)||(x<0)||(y>=s)||(y<0));
 	}
 	
 }
