@@ -9,6 +9,24 @@ public class SquatterBoard implements SquatterPiece {
 	public int emptycells;
 	public int whitepoints, blackpoints;
 
+	public SquatterBoard cloneBoard(){
+		
+		int[][] tmp = new int[size][size];
+		
+		for(int i = 0; i < size; i++){
+			for(int j = 0; j < size; j++){
+				tmp[i][j] = b[i][j];
+			}
+		}
+		
+		int newsize = size;
+		int newemptycells = emptycells;
+		int newwhitepoints = whitepoints;
+		int newblackpoints = blackpoints;
+		
+		return new SquatterBoard(tmp,newsize,newemptycells,newwhitepoints,newblackpoints);
+	}
+	
 	/** Initialize an empty board of size n
 	 * @param n This creates a n x n board
 	 */
@@ -19,6 +37,16 @@ public class SquatterBoard implements SquatterPiece {
 		this.b = new int[n][n];
 		this.emptycells = n*n;
 	}
+	
+	public SquatterBoard(int[][] b, int size, int empty, int wp, int bp){
+		this.b = b;
+		this.size = size;
+		this.emptycells = empty;
+		this.whitepoints = wp;
+		this.blackpoints = bp;
+	}
+
+	
 	
 	/** Prints boards
 	 * @param output print stream where board will be printed
@@ -217,6 +245,7 @@ public class SquatterBoard implements SquatterPiece {
 	 * @return true if empty, false if not
 	 */
 	public boolean isPosValid (int x, int y){
+		
 		return (this.b[x][y] != EMPTY);
 	}
 	
