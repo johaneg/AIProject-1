@@ -93,19 +93,36 @@ public class SquatterBoard implements SquatterPiece {
 		
 		boolean fR = true, fT = true, fL = true, fB = true;
 		
-		if (row+1 >= size) fR = false;
+		boolean fRT = true, fRB = true, fLT = true, fLB = true;
+		
+		boolean bottom = (row+1 >= size),
+				top = (row-1 < 0),
+				right = (col+1 >= size),
+				left = (col-1 < 0) ;
+		
+		if (bottom) fB = false;
 		else if(this.b[row+1][col] == p){adj++; fB = false; }
 		
-		if (col-1 < 0) fT = false;
+		if (left) fL = false;
 		else if(this.b[row][col-1] == p){adj++; fL = false;}
 		
-		if (row-1 < 0) fL = false;
+		if (top) fT = false;
 		else if(this.b[row-1][col] == p){adj++; fT = false;}
 
-		if (col+1 >= size) fB = false;
+		if (right) fR = false;
 		else if(this.b[row][col+1] == p){adj++; fR = false;}
-
-		boolean worthInspecting = ((adj == 2)||(adj == 3));	
+		
+		if(bottom||right) fRB = false;
+		else if(this.b[row+1][col+1] == p){adj++; fRB = false;}
+		if(bottom||left) fLB = false;
+		else if(this.b[row+1][col-1] == p){adj++; fLB = false;}
+		if(top||right) fRT = false;
+		else if(this.b[row-1][col+1] == p){adj++; fRT = false;}
+		if(top||left) fLT = false;
+		else if(this.b[row-1][col-1] == p){adj++; fLT = false;}
+		
+		
+		boolean worthInspecting = ((adj != 0)||(adj != 1));	
 		
 		return new boolean[]{worthInspecting,fR, fT, fL, fB};
 	}
