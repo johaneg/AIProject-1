@@ -8,6 +8,10 @@ import aima.core.agent.Agent;
 import aima.core.agent.Percept;
 import squatter.player.Helper;
 
+/**
+ * Random moving squatter agent. To improve override the method execute
+ * @author manoelribeiro
+ */
 public class SquatterAgent implements Agent, SquatterPiece {
 
 	private int color;
