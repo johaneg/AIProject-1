@@ -1,29 +1,23 @@
 package squatter.player;
 
 import java.io.PrintStream;
-import java.util.Random;
 
-import aima.core.agent.Action;
-import aima.core.agent.Agent;
-import aima.core.agent.Percept;
-import squatter.player.Helper;
+import squatter.core.Move;
+import squatter.core.Player;
+
 
 /**
  * Random moving squatter agent. To improve override the method execute
  * @author manoelribeiro
  */
-public class SquatterAgent implements Agent, SquatterPiece {
+public abstract class SquatterAgent implements SquatterPiece, Player {
 
 	private int color;
 	private SquatterBoard board;
-	private boolean isAlive;
-	private Random rand;
 	
 	/** Creates new empty squatter agent
 	 */
-	public SquatterAgent(){
-		isAlive = true;
-	}
+	public SquatterAgent(){}
 	
 	/** Initializes new squatter agent,
 	 * @param n Color of the agent.
@@ -32,59 +26,52 @@ public class SquatterAgent implements Agent, SquatterPiece {
 	public int init (int n, int p){
 		this.color = p;
 		this.board = new SquatterBoard(n);
-		rand = new Random();
 		return 1;
+	}
+	
+	public Move makeMove(){
+		return this.makeMove(this.board, this.color);
+	}
+	
+	private Move makeMove(SquatterBoard b, int color) {
 
-	}
-	
-	public SquatterMove execute(){
-		return this.execute(this.board);
-	}
-	
-	@Override
-	public SquatterMove execute(Percept b) {
-		if(!(b instanceof SquatterBoard))
-			throw new IllegalArgumentException("Percept must be of subclass board");
+		int [][] positions = b.GetPositions();
 		
+		int[] play = whereToGo(b,color,positions);
 		
-		int [][] positions = Helper.GetPositions(board);
-		System.out.println(board.emptycells + " "+ positions.length);
-		int play = rand.nextInt(board.emptycells);
+		Move next = new Move();
+		next.Row = play[0];
+		next.Col = play[1];
+		next.P = this.color;
 		
-		SquatterMove next = new SquatterMove(positions[play][0],positions[play][1],this.color);
-		
-		changeBoard(next);
+		b.makeMove(next.Row, next.Col, next.P);
 		
 		return next;
 	}
 
-	@Override
-	public boolean isAlive() {
-		return isAlive;
-	}
-
-	@Override
-	public void setAlive(boolean arg0) {
-		this.isAlive = arg0;
-	}
-
-	public int changeBoard(SquatterMove move){
-		
-		if(isPosValid(move.Row, move.Col)) return -1;
-		else{
-			board.makeMove(move.Row, move.Col, move.P);
-			return 0;
-		}
+	/**  Should return an array with two elements [row, column] on where the play should be made
+	 * @param b
+	 * @param color
+	 * @param Positions
+	 * @return
+	 */
+	public abstract int[] whereToGo (SquatterBoard b, int color, int[][] positions);
+	
+	public int opponentMove(Move m) {
+		return board.makeMove(m.Row, m.Col, m.P);
 	}
 	
-	private boolean isPosValid (int x, int y){
-		return (this.board.b[x][y] != EMPTY);
-	}
-	
+	/** Gets the winner outputting 1 if WHITE
+	 * 2 if BLACK, 0 if none and -1 if DRAWN
+	 * @return
+	 */
 	public int getWinner(){
-		return Helper.GetWinner(this.board);
+		return this.board.GetWinner();
 	}
 	
+	/** Prints the board in the given PrintStream
+	 * @param output printstream where it'll be printed
+	 */
 	public void printBoard(PrintStream output) {
 		this.board.printBoard(output);
 	}

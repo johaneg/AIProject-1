@@ -1,12 +1,8 @@
 package squatter.player;
 
 import java.io.PrintStream;
-import java.util.Arrays;
 
-import aima.core.agent.Percept;
-import squatter.core.Piece;
-
-public class SquatterBoard implements Percept, SquatterPiece {
+public class SquatterBoard implements SquatterPiece {
 
 	public int [][] b;
 	public int size;
@@ -43,55 +39,13 @@ public class SquatterBoard implements Percept, SquatterPiece {
 	 * @param col
 	 * @param p color of the player making the move
 	 */
-	public void makeMove (int row, int col, int p){
-		this.b[row][col] = p;
-		emptycells--;
-		updateBoard(row,col,p);
-	}
-	
-	/** Check neighborhood to see if conquering is possible
-	 * if it is, for each possible conquered direction
-	 * see if it was conquered and updates accordingly
-	 * @param row row of the move
-	 * @param col col of the move
-	 * @param p color of the player who made the move
-	 */
-	private void updateBoard(int row, int col, int p){
-		boolean[] conditions = neighboorhoodCheck(row,col,p);
-		if (!conditions[0]){
-			return;
-		}
-		else {
-
-			// declare check matrix
-			boolean[][][] check = new boolean[4][size][size];
-			
-			
-			if(conditions[1])//fr
-			{
-				if(this.isRegionConquered(check[0], size, row, col + 1, p) == 1)
-					{ updateConquered(check[0],p); }
-			}
-			
-			if(conditions[2])//ft
-			{
-				if(this.isRegionConquered(check[1], size, row - 1, col, p) == 1)
-					{ updateConquered(check[1],p); }
-			}
-			
-			if(conditions[3])//fl
-			{
-				if(this.isRegionConquered(check[2], size, row, col - 1, p) == 1)
-					{ updateConquered(check[2],p); } 
-			}
-			
-			if(conditions[4])//fb
-			{
-				if(this.isRegionConquered(check[3], size, row + 1, col, p) == 1)
-					{ updateConquered(check[3],p); }
-			}
-			
-
+	public int makeMove (int row, int col, int p){
+		if(this.isPosValid(row, col)) return -1;
+		else{
+			this.b[row][col] = p;
+			emptycells--;
+			updateBoard(row,col,p);
+			return 0;
 		}
 	}
 	
@@ -220,5 +174,95 @@ public class SquatterBoard implements Percept, SquatterPiece {
 		return output;	
 	}
 	
+	/** Gets all the playable positions on the board
+	 * @param board
+	 * @return
+	 */
+	public int[][] GetPositions(){
+		
+		int [][] options = new int[this.emptycells][2];
+		
+		int k = 0;
+		for(int i = 0; i < this.size; i++)
+		{
+			for(int j = 0; j < this.size; j++){
+				if (this.b[i][j] == EMPTY){
+					options[k][0] = i;
+					options[k][1] = j;
+					k++;
+				}
+			}
+
+		}
+		
+		return options;
+	}
 	
+	/** Returns if someone won the game.
+	 * @param board Current situation of the game
+	 * @return 1 if white won, 2 if black won, 0 if drawn
+	 */
+	public  int GetWinner(){
+		if(this.emptycells != 0) return 0;
+		
+		int result = this.whitepoints - this.blackpoints;
+		if(result > 0) return 1;
+		else if (result < 0) return 2;
+		else return -1;
+	}
+
+	/** Returns wether the pos is empty or not
+	 * @param x row
+	 * @param y col
+	 * @return true if empty, false if not
+	 */
+	public boolean isPosValid (int x, int y){
+		return (this.b[x][y] != EMPTY);
+	}
+	
+	/** Check neighborhood to see if conquering is possible
+	 * if it is, for each possible conquered direction
+	 * see if it was conquered and updates accordingly
+	 * @param row row of the move
+	 * @param col col of the move
+	 * @param p color of the player who made the move
+	 */
+	private void updateBoard(int row, int col, int p){
+		boolean[] conditions = neighboorhoodCheck(row,col,p);
+		if (!conditions[0]){
+			return;
+		}
+		else {
+
+			// declare check matrix
+			boolean[][][] check = new boolean[4][size][size];
+			
+			
+			if(conditions[1])//fr
+			{
+				if(this.isRegionConquered(check[0], size, row, col + 1, p) == 1)
+					{ updateConquered(check[0],p); }
+			}
+			
+			if(conditions[2])//ft
+			{
+				if(this.isRegionConquered(check[1], size, row - 1, col, p) == 1)
+					{ updateConquered(check[1],p); }
+			}
+			
+			if(conditions[3])//fl
+			{
+				if(this.isRegionConquered(check[2], size, row, col - 1, p) == 1)
+					{ updateConquered(check[2],p); } 
+			}
+			
+			if(conditions[4])//fb
+			{
+				if(this.isRegionConquered(check[3], size, row + 1, col, p) == 1)
+					{ updateConquered(check[3],p); }
+			}
+			
+
+		}
+	}
 }
