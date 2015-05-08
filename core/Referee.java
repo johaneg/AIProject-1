@@ -1,5 +1,7 @@
 package squatter.core;
 
+import java.io.IOException;
+
 /*   
  *   Referee:
  *      A mediator between two players. It is responsible mto initialize 
@@ -22,6 +24,13 @@ public class Referee implements Piece{
 	 */
 	public static void main(String[] args)
 	{
+		try {
+			System.in.read();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
 		lastPlayedMove = new Move();
 		int NumberofMoves = 0;
 		int boardEmptyPieces=Integer.valueOf(args[0])*Integer.valueOf(args[0]);
@@ -85,6 +94,14 @@ public class Referee implements Piece{
 		System.out.println("Player two (Black) indicate winner as: "+ P2.getWinner());
 		System.out.println("Total Number of Moves Played in the Game: "+ NumberofMoves);
 		System.out.println("Referee Finished !");
+		
+		try {
+			System.in.read();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 	
 
